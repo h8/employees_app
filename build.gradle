@@ -1,0 +1,76 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.10.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("nu.studer:gradle-jooq-plugin:2.0.9")
+        classpath("mysql:mysql-connector-java:5.1.45")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'nu.studer.jooq'
+
+group = 'com.alexample'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter-web")
+	compile("org.springframework.boot:spring-boot-devtools")
+    compile("org.springframework.boot:spring-boot-starter-jooq")
+    compile("org.elasticsearch:elasticsearch:6.2.2")
+    compile("org.elasticsearch.client:elasticsearch-rest-high-level-client:6.2.2")
+    runtime("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+	runtime("mysql:mysql-connector-java")
+    jooqRuntime('mysql:mysql-connector-java:5.1.45')
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+jooq {
+    version = '3.9.6'
+    edition = 'OSS'
+    sample(sourceSets.main) {
+        jdbc {
+            driver = 'org.gjt.mm.mysql.Driver'
+            url = 'jdbc:mysql://localhost:3306/employees'
+            user = 'employees'
+            password = ''
+        }
+        generator {
+            name = 'org.jooq.util.DefaultGenerator'
+            strategy {
+                name = 'org.jooq.util.DefaultGeneratorStrategy'
+            }
+            database {
+                inputSchema = 'employees'
+                outputSchemaToDefault = true
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                immutablePojos = true
+                fluentSetters = true
+            }
+            target {
+                packageName = 'com.alexample.generated.db'
+                directory = 'src/generated/java'
+            }
+        }
+    }
+}
+
