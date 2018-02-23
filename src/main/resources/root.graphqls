@@ -1,0 +1,9 @@
+type EmployeeDTO {
+  id: ID!
+  firstName: String!
+  lastName: String!
+}
+
+type Query {
+  employee(id: Int): EmployeeDTO
+}

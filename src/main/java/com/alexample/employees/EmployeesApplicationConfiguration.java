@@ -1,5 +1,6 @@
 package com.alexample.employees;
 
+import com.alexample.employees.graphql.Query;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
